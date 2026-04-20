@@ -1,0 +1,71 @@
+# ================================
+# Step 1: Install Libraries
+# ================================
+!pip install pandas numpy matplotlib seaborn
+
+# ================================
+# Step 2: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ================================
+# Step 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# Step 4: Load Dataset (Error Handling)
+# ================================
+df = pd.read_csv("placement.csv")
+
+# Clean column names
+df.columns = df.columns.str.strip().str.lower()
+
+# Replace '?' with NaN
+df.replace('?', np.nan, inplace=True)
+
+# Convert numeric values
+for col in df.columns:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# Remove missing values
+df.dropna(inplace=True)
+
+print("Dataset Loaded Successfully\n")
+print(df.head())
+
+# ================================
+# Step 5: Scatter Plot
+# ================================
+plt.figure()
+sns.scatterplot(x='cgpa', y='placement_exam_marks', hue='placed', data=df)
+plt.title("CGPA vs Placement Exam Marks")
+plt.xlabel("CGPA")
+plt.ylabel("Exam Marks")
+plt.show()
+
+# ================================
+# Step 6: Correlation Matrix
+# ================================
+corr = df.corr(numeric_only=True)
+print("\nCorrelation Matrix:\n", corr)
+
+# ================================
+# Step 7: Heatmap Visualization
+# ================================
+plt.figure()
+sns.heatmap(corr, annot=True)
+plt.title("Correlation Heatmap")
+plt.show()
+
+# ================================
+# Step 8: Pair Plot (Extra Visualization)
+# ================================
+sns.pairplot(df, hue='placed')
+plt.show()
+
+print("\nVisualization Completed Successfully ✅")
