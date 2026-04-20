@@ -1,0 +1,74 @@
+# ================================
+# Step 1: Install Libraries
+# ================================
+!pip install pandas numpy matplotlib seaborn scipy
+
+# ================================
+# Step 2: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import skew
+
+# ================================
+# Step 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# Step 4: Load Dataset
+# ================================
+df = pd.read_csv("Student_Marks.csv")
+
+# Clean column names
+df.columns = df.columns.str.strip().str.lower()
+
+# Replace '?' with NaN
+df.replace('?', np.nan, inplace=True)
+
+# Convert numeric
+for col in df.columns:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# Drop missing values
+df.dropna(inplace=True)
+
+print("Dataset Loaded Successfully\n")
+print(df.head())
+
+# ================================
+# Step 5: Descriptive Statistics
+# ================================
+print("\n===== DESCRIPTIVE STATISTICS =====")
+print(df.describe())
+
+# Mean, Median, Std (for each column)
+for col in df.columns:
+    print(f"\nColumn: {col}")
+    print("Mean:", df[col].mean())
+    print("Median:", df[col].median())
+    print("Std Dev:", df[col].std())
+
+# ================================
+# Step 6: Skewness Check
+# ================================
+print("\n===== SKEWNESS =====")
+for col in df.columns:
+    sk = skew(df[col])
+    print(f"{col}: {sk}")
+
+# ================================
+# Step 7: Distribution Plot
+# ================================
+plt.figure()
+sns.histplot(df.iloc[:, -1], kde=True)
+plt.title("Distribution of Last Column")
+plt.show()
+
+# ================================
+# Step 8: Conclusion
+# ================================
+print("\nAnalysis Completed Successfully ✅")
