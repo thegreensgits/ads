@@ -1,0 +1,53 @@
+# ================================
+# STEP 1: Install Libraries
+# ================================
+!pip install pandas numpy
+
+# ================================
+# STEP 2: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+
+# ================================
+# STEP 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 4: Load Dataset
+# ================================
+df = pd.read_csv("Automobile_data.csv")
+
+print("Dataset Preview:")
+print(df.head())
+
+# ================================
+# STEP 5: Check Missing Values
+# ================================
+print("\n--- Missing Values BEFORE ---")
+print(df.isnull().sum())
+
+# ================================
+# STEP 6: Replace '?' with NaN (common in this dataset)
+# ================================
+df.replace('?', np.nan, inplace=True)
+
+# ================================
+# STEP 7: Imputation
+# ================================
+
+# Numeric columns → fill with mean
+for col in df.select_dtypes(include=['float64', 'int64']).columns:
+    df[col].fillna(df[col].mean(), inplace=True)
+
+# Object columns → fill with mode
+for col in df.select_dtypes(include=['object']).columns:
+    df[col].fillna(df[col].mode()[0], inplace=True)
+
+# ================================
+# STEP 8: Check After Imputation
+# ================================
+print("\n--- Missing Values AFTER ---")
+print(df.isnull().sum())
