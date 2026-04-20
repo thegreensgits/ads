@@ -1,0 +1,91 @@
+# ================================
+# STEP 1: Install Required Libraries
+# ================================
+!pip install imbalanced-learn scikit-learn pandas numpy
+
+# ================================
+# STEP 2: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, f1_score
+
+from imblearn.over_sampling import SMOTE
+
+# ================================
+# STEP 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 4: Load Dataset
+# ================================
+df = pd.read_csv("diabetes.csv")
+
+print("Dataset Preview:")
+print(df.head())
+
+# ================================
+# STEP 5: Split Features & Target
+# ================================
+# Usually target column is 'Outcome'
+X = df.drop("Outcome", axis=1)
+y = df["Outcome"]
+
+# ================================
+# STEP 6: Train-Test Split
+# ================================
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ================================
+# STEP 7: Model BEFORE SMOTE
+# ================================
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+print("\n--- BEFORE SMOTE ---")
+print(classification_report(y_test, y_pred))
+f1_before = f1_score(y_test, y_pred)
+print("F1 Score BEFORE SMOTE:", f1_before)
+
+# ================================
+# STEP 8: Apply SMOTE
+# ================================
+smote = SMOTE(random_state=42)
+X_train_sm, y_train_sm = smote.fit_resample(X_train, y_train)
+
+print("\nAfter SMOTE Class Distribution:")
+print(pd.Series(y_train_sm).value_counts())
+
+# ================================
+# STEP 9: Model AFTER SMOTE
+# ================================
+model_sm = LogisticRegression(max_iter=1000)
+model_sm.fit(X_train_sm, y_train_sm)
+
+y_pred_sm = model_sm.predict(X_test)
+
+print("\n--- AFTER SMOTE ---")
+print(classification_report(y_test, y_pred_sm))
+f1_after = f1_score(y_test, y_pred_sm)
+print("F1 Score AFTER SMOTE:", f1_after)
+
+# ================================
+# STEP 10: Comparison
+# ================================
+print("\n--- COMPARISON ---")
+print("F1 Score Before SMOTE:", f1_before)
+print("F1 Score After SMOTE:", f1_after)
+
+if f1_after > f1_before:
+    print("F1 Score Improved after SMOTE")
+else:
+    print("No significant improvement")
