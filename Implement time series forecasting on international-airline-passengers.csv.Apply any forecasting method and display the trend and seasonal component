@@ -1,0 +1,64 @@
+# ================================
+# STEP 1: Install Libraries
+# ================================
+!pip install pandas matplotlib statsmodels
+
+# ================================
+# STEP 2: Import Libraries
+# ================================
+import pandas as pd
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+# ================================
+# STEP 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 4: Load Dataset (CLEAN WAY)
+# ================================
+df = pd.read_csv("international-airline-passengers.csv")
+
+# Drop rows where Month is not valid (remove text rows)
+df = df[df.iloc[:,0].str.contains(r'\d', na=False)]
+
+# Rename columns
+df.columns = ["Month", "Passengers"]
+
+# Convert to datetime (auto detect format)
+df["Month"] = pd.to_datetime(df["Month"], errors='coerce')
+
+# Drop invalid dates if any
+df = df.dropna()
+
+# Set index
+df.set_index("Month", inplace=True)
+
+print(df.head())
+
+# ================================
+# STEP 5: Plot Original Data
+# ================================
+plt.figure()
+plt.plot(df)
+plt.title("Airline Passengers Over Time")
+plt.show()
+
+# ================================
+# STEP 6: Decomposition
+# ================================
+decomposition = seasonal_decompose(df, model='additive')
+
+# ================================
+# STEP 7: Plot Components
+# ================================
+decomposition.trend.plot(title="Trend")
+plt.show()
+
+decomposition.seasonal.plot(title="Seasonal")
+plt.show()
+
+decomposition.resid.plot(title="Residual")
+plt.show()
