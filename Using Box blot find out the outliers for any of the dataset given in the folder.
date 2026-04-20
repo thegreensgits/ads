@@ -1,0 +1,36 @@
+# ================================
+# STEP 1: Import Libraries
+# ================================
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ================================
+# STEP 2: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 3: Load Dataset
+# ================================
+df = pd.read_csv("placement.csv")
+
+print("Dataset Preview:")
+print(df.head())
+
+# ================================
+# STEP 4: Boxplot for CGPA
+# ================================
+plt.figure()
+sns.boxplot(x=df['cgpa'])
+plt.title("Boxplot of CGPA")
+plt.show()
+
+# ================================
+# STEP 5: Boxplot for Exam Marks
+# ================================
+plt.figure()
+sns.boxplot(x=df['placement_exam_marks'])
+plt.title("Boxplot of Exam Marks")
+plt.show()
