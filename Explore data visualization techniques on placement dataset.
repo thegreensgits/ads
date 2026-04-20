@@ -1,0 +1,44 @@
+# ================================
+# STEP 1: Import Libraries
+# ================================
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ================================
+# STEP 2: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 3: Load Dataset
+# ================================
+df = pd.read_csv("placement.csv")
+
+print("Dataset Preview:")
+print(df.head())
+
+# ================================
+# STEP 4: Scatter Plot
+# ================================
+plt.figure()
+sns.scatterplot(x='cgpa', y='placement_exam_marks', hue='placed', data=df)
+plt.title("CGPA vs Exam Marks")
+plt.show()
+
+# ================================
+# STEP 5: Histogram
+# ================================
+plt.figure()
+sns.histplot(df['cgpa'])
+plt.title("CGPA Distribution")
+plt.show()
+
+# ================================
+# STEP 6: Count Plot
+# ================================
+plt.figure()
+sns.countplot(x='placed', data=df)
+plt.title("Placement Count")
+plt.show()
