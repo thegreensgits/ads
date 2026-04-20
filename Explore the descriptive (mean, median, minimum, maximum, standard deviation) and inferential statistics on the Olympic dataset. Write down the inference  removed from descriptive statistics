@@ -1,0 +1,74 @@
+# ================================
+# STEP 1: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+from scipy import stats
+
+# ================================
+# STEP 2: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 3: Load Dataset
+# ================================
+df = pd.read_csv("olympics.csv", header=1)
+
+# ================================
+# STEP 4: Rename Columns (Clean)
+# ================================
+df.rename(columns={df.columns[0]: "Country"}, inplace=True)
+
+# ================================
+# STEP 5: Convert All Possible Columns to Numeric
+# ================================
+df = df.apply(pd.to_numeric, errors='ignore')
+
+# Extract only numeric columns
+numeric_df = df.select_dtypes(include=[np.number])
+
+# ================================
+# STEP 6: Descriptive Statistics
+# ================================
+print("\n--- Descriptive Statistics ---")
+
+print("\nMean:\n", numeric_df.mean())
+print("\nMedian:\n", numeric_df.median())
+print("\nMinimum:\n", numeric_df.min())
+print("\nMaximum:\n", numeric_df.max())
+print("\nStandard Deviation:\n", numeric_df.std())
+
+# ================================
+# STEP 7: Inferential Statistics
+# ================================
+print("\n--- Inferential Statistics ---")
+
+# Select first numeric column safely
+if len(numeric_df.columns) > 0:
+    col = numeric_df.columns[0]
+    
+    t_stat, p_value = stats.ttest_1samp(numeric_df[col].dropna(), 0)
+
+    print(f"\nT-test on column '{col}':")
+    print("T-Statistic:", t_stat)
+    print("P-Value:", p_value)
+
+    # ================================
+    # STEP 8: Inference
+    # ================================
+    print("\n--- Inference ---")
+
+    if p_value < 0.05:
+        print("Reject Null Hypothesis: Data is statistically significant")
+    else:
+        print("Fail to Reject Null Hypothesis")
+
+else:
+    print("No numeric columns found!")
+
+print("\nDescriptive Insight:")
+print("- Mean vs Median shows distribution")
+print("- High std deviation = high variation")
+print("- Min & Max show range")
