@@ -1,0 +1,81 @@
+# ================================
+# Step 1: Install Libraries
+# ================================
+!pip install pandas numpy matplotlib seaborn
+
+# ================================
+# Step 2: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ================================
+# Step 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# Step 4: Load & Clean Dataset
+# ================================
+df = pd.read_csv("Automobile_data.csv")
+
+# Remove duplicate header row
+df = df[df['symboling'] != 'symboling']
+df.reset_index(drop=True, inplace=True)
+
+# Clean column names (IMPORTANT FIX)
+df.columns = df.columns.str.strip().str.lower().str.replace('-', '_')
+
+# Replace '?' with NaN
+df.replace('?', np.nan, inplace=True)
+
+# Convert numeric columns
+for col in df.columns:
+    try:
+        df[col] = pd.to_numeric(df[col])
+    except:
+        pass
+
+# Fill missing values
+df.fillna(df.median(numeric_only=True), inplace=True)
+
+print("Dataset Cleaned Successfully\n")
+print(df.head())
+
+# ================================
+# Step 5: Info & Stats
+# ================================
+print("\n===== DATA INFO =====")
+print(df.info())
+
+print("\n===== DESCRIPTIVE STATS =====")
+print(df.describe())
+
+# ================================
+# Step 6: Histogram
+# ================================
+plt.figure()
+sns.histplot(df['price'], kde=True)
+plt.title("Price Distribution")
+plt.show()
+
+# ================================
+# Step 7: Scatter Plot (FIXED)
+# ================================
+plt.figure()
+sns.scatterplot(x='engine_size', y='price', data=df)
+plt.title("Engine Size vs Price")
+plt.show()
+
+# ================================
+# Step 8: Correlation Heatmap
+# ================================
+plt.figure(figsize=(10,6))
+sns.heatmap(df.corr(numeric_only=True), annot=True)
+plt.title("Correlation Matrix")
+plt.show()
+
+print("\nEDA Completed Successfully ✅")
