@@ -1,0 +1,55 @@
+# ================================
+# Step 1: Install Libraries
+# ================================
+!pip install pandas numpy matplotlib seaborn scikit-learn
+
+# ================================
+# Step 2: Import Libraries
+# ================================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+
+# ================================
+# Step 3: Load Dataset (No Upload Needed)
+# ================================
+iris = load_iris()
+
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+# Add species column
+df['species'] = iris.target
+
+print("Dataset Loaded Successfully\n")
+print(df.head())
+
+# ================================
+# Step 4: Scatter Plot
+# ================================
+plt.figure()
+sns.scatterplot(x='sepal length (cm)', y='petal length (cm)', 
+                hue='species', data=df)
+
+plt.title("Sepal Length vs Petal Length")
+plt.xlabel("Sepal Length")
+plt.ylabel("Petal Length")
+plt.show()
+
+# ================================
+# Step 5: Correlation
+# ================================
+corr = df.corr(numeric_only=True)
+
+print("\nCorrelation Matrix:\n", corr)
+
+# ================================
+# Step 6: Heatmap
+# ================================
+plt.figure()
+sns.heatmap(corr, annot=True)
+plt.title("Correlation Heatmap")
+plt.show()
+
+print("\nVisualization Completed Successfully ✅")
