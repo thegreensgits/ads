@@ -1,0 +1,65 @@
+# ================================
+# STEP 1: Install Libraries
+# ================================
+!pip install pandas scikit-learn
+
+# ================================
+# STEP 2: Import Libraries
+# ================================
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+
+# ================================
+# STEP 3: Upload Dataset
+# ================================
+from google.colab import files
+uploaded = files.upload()
+
+# ================================
+# STEP 4: Load Dataset
+# ================================
+df = pd.read_csv("placement.csv")
+
+print("Dataset Preview:")
+print(df.head())
+
+# ================================
+# STEP 5: Prepare Data
+# ================================
+# Assume last column is target (placed or not)
+X = df.iloc[:, :-1]
+y = df.iloc[:, -1]
+
+# ================================
+# STEP 6: Train-Test Split
+# ================================
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ================================
+# STEP 7: Train Model
+# ================================
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+
+# ================================
+# STEP 8: Predictions
+# ================================
+y_pred = model.predict(X_test)
+
+# ================================
+# STEP 9: Evaluation Metrics
+# ================================
+print("\n--- Performance Metrics ---")
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Precision:", precision_score(y_test, y_pred))
+print("Recall:", recall_score(y_test, y_pred))
+print("F1 Score:", f1_score(y_test, y_pred))
+
+print("\nClassification Report:\n")
+print(classification_report(y_test, y_pred))
